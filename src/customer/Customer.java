@@ -1,8 +1,10 @@
 package customer;
 
-import Mediator.Mediator;
+import Mediator.PeopleMediator;
 import helper.NameGenerator;
 import restaurant.CurrentRestaurant;
+import worker.Worker;
+import worker.cook.Cook;
 
 public class Customer implements Runnable {
     private String name;
@@ -11,17 +13,19 @@ public class Customer implements Runnable {
     private CustomerBaseState phase;
     private boolean isPaused = false;
     private boolean isStop = false;
-    private Mediator mediator;
-    protected CustomerEatState eatState;
-    protected CustomerOrderState orderState;
-    protected CustomerOrderServerState orderServerState;
-    protected CustomerWaitState waitState;
-    protected CustomerWaitCookState waitCookState;
-    protected CustomerWaitServerState waitServerState;
+    private PeopleMediator mediator;
+    private Worker worker;
+    private int score;
+    public CustomerEatState eatState;
+    public CustomerOrderState orderState;
+    public CustomerOrderServerState orderServerState;
+    public CustomerWaitState waitState;
+    public CustomerWaitCookState waitCookState;
+    public CustomerWaitServerState waitServerState;
 
-    public Customer(Mediator mediator){
+    public Customer(PeopleMediator mediator){
         this.name = NameGenerator.generateName();
-        this.tolerance = 20;
+        this.tolerance = 2;
         this.eatState = new CustomerEatState();
         this.orderState = new CustomerOrderState();
         this.orderServerState = new CustomerOrderServerState();
@@ -33,9 +37,12 @@ public class Customer implements Runnable {
         this.thread = new Thread(this);
         this.thread.start();
         this.mediator = mediator;
+        this.mediator.register(this);
+        this.score = 0;
+
     }
 
-    protected void switchState(CustomerBaseState newState){
+    public void switchState(CustomerBaseState newState){
         this.phase = newState;
         this.phase.enterState(this);
     }
@@ -68,32 +75,62 @@ public class Customer implements Runnable {
         return isPaused;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
     public void setPaused(boolean paused) {
-        System.out.println("Customer " + this.name + " is paused" + paused);
         isPaused = paused;
     }
 
     public void leave(){
-        this.thread.interrupt();
         this.isStop = true;
         CurrentRestaurant.getInstance().getCurrentRestaurant().removeCustomer(this.name);
         CurrentRestaurant.getInstance().getCurrentRestaurant().setScore(CurrentRestaurant.getInstance().getCurrentRestaurant().getScore() - 300);
+        this.mediator.leaveCustomer(this);
+        this.mediator.unregister(this.name);
+    }
 
+    public void finish() {
+        this.isStop = true;
+        CurrentRestaurant.getInstance().getCurrentRestaurant().removeCustomer(this.name);
+        System.out.println(this.score);
+        CurrentRestaurant.getInstance().getCurrentRestaurant().setScore(CurrentRestaurant.getInstance().getCurrentRestaurant().getScore() + this.score);
+        CurrentRestaurant.getInstance().getCurrentRestaurant().setMoney(CurrentRestaurant.getInstance().getCurrentRestaurant().getMoney() + this.score);
+        this.mediator.unregister(this.name);
     }
 
     @Override
     public void run() {
         while(true) {
-            if(this.isStop) break;
-            if(this.isPaused) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                continue;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
+            if(this.isPaused) continue;
+            if(this.isStop) break;
             phase.updateState(this);
         }
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public void setStop(boolean stop) {
+        isStop = stop;
     }
 }

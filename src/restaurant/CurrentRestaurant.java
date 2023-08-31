@@ -49,19 +49,32 @@ public class CurrentRestaurant {
         this.currentRestaurant.getGameInput().setStopped(false);
         this.currentRestaurant.switchState(this.currentRestaurant.getUnpausedState());
 
-        for(Server server : this.currentRestaurant.getServers()){
+        for(Server server : CurrentRestaurant.getInstance().getCurrentRestaurant().getServers()){
             server.setPaused(false);
         }
-        for(Cook cook : this.currentRestaurant.getCooks()){
+        for(Cook cook : CurrentRestaurant.getInstance().getCurrentRestaurant().getCooks()){
             cook.setPaused(false);
         }
-        for(Customer customer : this.currentRestaurant.getCustomers()){
-            System.out.println(customer.getName());
+        for(Customer customer : CurrentRestaurant.getInstance().getCurrentRestaurant().getCustomers()){
             customer.setPaused(false);
         }
     }
     public void handleUpdate(){
         this.currentRestaurant.addCustomer();
+    }
+
+    public void stopGame(){
+        this.currentRestaurant.getGameInput().setStopped(true);
+
+        for(Server server : CurrentRestaurant.getInstance().getCurrentRestaurant().getServers()){
+            server.setStopped(true);
+        }
+        for(Cook cook : CurrentRestaurant.getInstance().getCurrentRestaurant().getCooks()){
+            cook.setStopped(true);
+        }
+        for(Customer customer : CurrentRestaurant.getInstance().getCurrentRestaurant().getCustomers()){
+            customer.setStop(true);
+        }
     }
 
 }

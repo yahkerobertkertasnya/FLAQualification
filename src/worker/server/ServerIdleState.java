@@ -9,6 +9,6 @@ public class ServerIdleState extends ServerBaseState {
 
     @Override
     public void updateState(Server currServer) {
-
+        currServer.getMediator().takeCustomerOrder(currServer);
     }
 }

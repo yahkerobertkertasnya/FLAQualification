@@ -1,3 +1,6 @@
+rawr#1110
+rawrr#300
+rawrr#180
 7alvin#123
 7alvin#88
 7alvin#12
@@ -5,6 +8,3 @@
 7alvin#1
 7alvin#1
 7alvin#1
-7alvin#1
-7alvin#0
-7alvin#0

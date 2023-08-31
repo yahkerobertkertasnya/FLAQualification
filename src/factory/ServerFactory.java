@@ -1,12 +1,12 @@
 package factory;
 
-import Mediator.Mediator;
+import Mediator.PeopleMediator;
 import worker.Worker;
 import worker.server.Server;
 
 public class ServerFactory implements WorkerFactory {
     @Override
-    public Worker createWorker(Mediator mediator) {
+    public Worker createWorker(PeopleMediator mediator) {
         return new Server(mediator);
     }
 }

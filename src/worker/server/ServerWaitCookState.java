@@ -8,6 +8,6 @@ public class ServerWaitCookState extends ServerBaseState {
 
     @Override
     public void updateState(Server currServer) {
-
+        currServer.getMediator().finishCustomerOrder(currServer);
     }
 }

@@ -29,17 +29,19 @@ public class PlayMenu {
         for(int i = 0; i < max; i++) {
             if(i < customers.size()) {
                 Customer currCustomer = customers.get(i);
-                System.out.printf("%s <%02d>, %-20s <%-2s> | ", currCustomer.getName(), currCustomer.getTolerance(), currCustomer.getPhase().getName(), "");
+                System.out.printf("%s <%02d>, %-20s | ", currCustomer.getName(), currCustomer.getTolerance(), currCustomer.getPhase().getName());
             } else {
-                System.out.printf("%-35s| ", "");
+                System.out.printf("%-30s| ", "");
             }
             if(i < servers.size()) {
                 Server currServer = servers.get(i);
-                System.out.printf("%s, %-20s <%-2s> | ", currServer.getName(), currServer.getPhase().getName() , "");
+                System.out.printf("%s, %-20s | ", currServer.getName(), currServer.getPhase().getName());
+            } else {
+                System.out.printf("%-25s| ", "");
             }
             if(i < cooks.size()) {
                 Cook currCook = cooks.get(i);
-                System.out.printf("%s, %-20s <%-2s>", currCook.getName(), currCook.getPhase().getName() , "");
+                System.out.printf("%s, %-20s", currCook.getName(), currCook.getPhase().getName());
             }
             System.out.println();
         }
@@ -58,22 +60,20 @@ public class PlayMenu {
         this.currRestaurant = CurrentRestaurant.getInstance().getCurrentRestaurant();
         CurrentRestaurant.getInstance().pauseGame();
         do {
-            if(CurrentRestaurant.getInstance().getCurrentRestaurant().getCurrState() == CurrentRestaurant.getInstance().getCurrentRestaurant().getPausedState()) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                continue;
-            }
-
-            this.printGameMenu();
-            CurrentRestaurant.getInstance().handleUpdate();
             try {
                 Thread.sleep(1000);
             } catch (Exception ignored) {
 
             }
+            if(CurrentRestaurant.getInstance().getCurrentRestaurant() != null && CurrentRestaurant.getInstance().getCurrentRestaurant().getCurrState() == CurrentRestaurant.getInstance().getCurrentRestaurant().getPausedState()) {
+                continue;
+            }
+            if(CurrentRestaurant.getInstance().getCurrentRestaurant() == null) {
+                return;
+            }
+
+            this.printGameMenu();
+            CurrentRestaurant.getInstance().handleUpdate();
         } while (true);
 //        String input;
 //        do {

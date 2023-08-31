@@ -1,14 +1,13 @@
 package factory;
 
-import Mediator.Mediator;
-import restaurant.CurrentRestaurant;
+import Mediator.PeopleMediator;
 import worker.Worker;
 import worker.cook.Cook;
 
 public class CookFactory implements WorkerFactory {
 
     @Override
-    public Worker createWorker(Mediator mediator) {
+    public Worker createWorker(PeopleMediator mediator) {
         return new Cook(mediator);
     }
 }

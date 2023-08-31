@@ -1,8 +1,8 @@
 package factory;
 
-import Mediator.Mediator;
+import Mediator.PeopleMediator;
 import worker.Worker;
 
 public interface WorkerFactory {
-    public Worker createWorker(Mediator mediator);
+    public Worker createWorker(PeopleMediator mediator);
 }

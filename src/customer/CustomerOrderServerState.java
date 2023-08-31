@@ -4,7 +4,7 @@ public class CustomerOrderServerState extends CustomerBaseState {
 
     @Override
     public void enterState(Customer currCustomer) {
-        this.name = String.format("order<%s>", "a");
+        this.name = String.format("order<%s>", currCustomer.getWorker().getName());
     }
 
     @Override

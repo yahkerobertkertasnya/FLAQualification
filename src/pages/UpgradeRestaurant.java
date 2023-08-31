@@ -59,7 +59,7 @@ public class UpgradeRestaurant {
     }
     public UpgradeRestaurant(){
         scanner = new Scanner(System.in);
-
+        String input3;
         String input;
         do {
             upgradeMainMenu();
@@ -97,6 +97,7 @@ public class UpgradeRestaurant {
                     if(input2 > 0 && input2 <= serverCount) {
                         String message = CurrentRestaurant.getInstance().getCurrentRestaurant().upgradeServer(input2);
                         System.out.println(message);
+
                     }
                     else if(input2 == 0) break;
                 } while (true);
@@ -110,8 +111,17 @@ public class UpgradeRestaurant {
                     input2 = scanner.nextInt();
 
                     if(input2 > 0 && input2 <= cookCount) {
-                        String message = CurrentRestaurant.getInstance().getCurrentRestaurant().upgradeCook(input2);
-                        System.out.println(message);
+
+                        do {
+                            System.out.println("Upgrade 'speed' or 'skill'?");
+                            input3 = scanner.nextLine();
+
+                            if(input3.equals("speed") || input3.equals("skill")) {
+                                String message = CurrentRestaurant.getInstance().getCurrentRestaurant().upgradeCook(input2, input3);
+                                System.out.println(message);
+                                break;
+                            }
+                        } while (true);
                     }
                     else if(input2 == 0) break;
                 } while (true);

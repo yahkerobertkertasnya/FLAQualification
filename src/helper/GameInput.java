@@ -27,7 +27,14 @@ public class GameInput implements Runnable {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         do {
-            if(this.isStopped) continue;
+            if(this.isStopped) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                continue;
+            }
 
             scanner.nextLine();
             CurrentRestaurant.getInstance().pauseGame();

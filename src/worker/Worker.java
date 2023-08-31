@@ -1,18 +1,20 @@
 package worker;
 
-import Mediator.Mediator;
+import Mediator.PeopleMediator;
+import customer.Customer;
 import helper.NameGenerator;
 
 public abstract class Worker implements Runnable {
     protected String name;
-    protected Mediator mediator;
+    protected PeopleMediator mediator;
     protected boolean isStopped;
     protected boolean isPaused;
     protected WorkerState phase;
     protected int speed;
     protected Thread thread;
+    protected Customer customer;
 
-    public Worker(Mediator mediator){
+    public Worker(PeopleMediator mediator){
         this.name = NameGenerator.generateName();
         this.speed = 1;
         this.isStopped = false;
@@ -64,5 +66,21 @@ public abstract class Worker implements Runnable {
 
     public Thread getThread(){
         return thread;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public PeopleMediator getMediator() {
+        return mediator;
+    }
+
+    public void setMediator(PeopleMediator mediator) {
+        this.mediator = mediator;
     }
 }

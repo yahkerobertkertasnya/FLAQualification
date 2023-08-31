@@ -1,31 +1,39 @@
 package worker.cook;
 
-import Mediator.Mediator;
+import Mediator.PeopleMediator;
 import worker.Worker;
 import worker.WorkerState;
 
-import javax.print.attribute.standard.Media;
-
 public class Cook extends Worker {
-    protected CookCookState cookState;
-    protected CookIdleState idleState;
-    protected CookDoneState doneState;
+    private int skill;
+    public CookCookState cookState;
+    public CookIdleState idleState;
+    public CookDoneState doneState;
 
-    public Cook(Mediator mediator){
+    public Cook(PeopleMediator mediator){
         super(mediator);
         this.cookState = new CookCookState();
         this.idleState = new CookIdleState();
         this.doneState = new CookDoneState();
-
+        this.mediator.register(this);
         this.phase = this.idleState;
         ((CookBaseState)this.phase).enterState(this);
         this.thread.start();
+        this.skill = 1;
         setPaused(true);
+    }
+
+    public int getSkill() {
+        return skill;
+    }
+
+    public void setSkill(int skill) {
+        this.skill = skill;
     }
 
     @Override
     public void updateState() {
-
+        ((CookBaseState)this.phase).updateState(this);
     }
 
     @Override
@@ -37,16 +45,14 @@ public class Cook extends Worker {
     @Override
     public void run() {
         do {
-            if(this.isPaused) continue;
-            this.updateState();
-            System.out.println("cook");
-            if(this.isStopped) break;
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            if(this.isPaused) continue;
+            this.updateState();
+            if(this.isStopped) break;
         } while(true);
     }
 }

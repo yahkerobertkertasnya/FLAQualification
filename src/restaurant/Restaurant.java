@@ -1,11 +1,10 @@
 package restaurant;
 
-import Mediator.Mediator;
+import Mediator.PeopleMediator;
 import customer.Customer;
 import factory.CookFactory;
 import factory.ServerFactory;
 import helper.GameInput;
-import helper.NameGenerator;
 import observer.CustomerGenerator;
 import observer.Observer;
 import observer.Subject;
@@ -29,7 +28,7 @@ public class Restaurant implements Subject {
     private RestaurantPausedState pausedState;
     private RestaurantUnpausedState unpausedState;
     private GameInput gameInput;
-    private Mediator mediator;
+    private PeopleMediator mediator;
 
     public Restaurant(String name) {
         this.name = name;
@@ -46,7 +45,7 @@ public class Restaurant implements Subject {
         this.unpausedState = new RestaurantUnpausedState();
         this.currState = unpausedState;
         this.gameInput = new GameInput();
-        this.mediator = new Mediator();
+        this.mediator = new PeopleMediator();
 
         addCook();
         addCook();
@@ -70,7 +69,7 @@ public class Restaurant implements Subject {
 
     protected void addCustomer() {
         if(chairCount == customers.size()) return;
-        if(subscribe.get(0).generateCustomer()) {
+        if(subscribe.get(0).generateCustomer()) { //TODO
             Customer customer = new Customer(this.mediator);
             customers.add(customer);
         }
@@ -213,6 +212,7 @@ public class Restaurant implements Subject {
     public String upgradeServer(int index){
         if(money < 150) return "Not enough money";
         Server currServer = servers.get(index);
+
         int speed = currServer.getSpeed();
 
         if(speed == 5) return "Already max speed";
@@ -222,11 +222,25 @@ public class Restaurant implements Subject {
         return "Server speed upgraded";
     }
 
-    public String upgradeCook(int index){
+    public String upgradeCook(int index, String type){
         if(money < 150) return "Not enough money";
         Cook currCook = cooks.get(index);
         int speed = currCook.getSpeed();
 
+        if(type.equals("speed")) {
+            if(currCook.getSpeed() == 5) return "Already max speed";
+            currCook.setSpeed(currCook.getSpeed() + 1);
+            money -= 150;
+
+            return "Server speed upgraded";
+        }
+        else if (type.equals("skill")) {
+            if(currCook.getSkill() == 5) return "Already max skill";
+            currCook.setSkill(currCook.getSkill() + 1);
+            money -= 150;
+
+            return "Server skill upgraded";
+        }
         if(speed == 5) return "Already max speed";
         currCook.setSpeed(speed + 1);
         money -= 150;
